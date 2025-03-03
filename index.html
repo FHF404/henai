@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时间记录小程序</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 15px;
+      text-align: right;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .records {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .record-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 40px;
+    }
+
+    .record-button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .clear-button {
+      padding: 8px 15px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .modal-button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .confirm-button {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .cancel-button {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="clear-button" id="clearButton">清除</button>
+  </div>
+
+  <div class="content">
+    <div class="records" id="recordsList"></div>
+
+    <div class="button-container">
+      <button class="record-button" id="recordButton">记录</button>
+    </div>
+  </div>
+
+  <div class="modal" id="clearModal">
+    <div class="modal-content">
+      <p>是否确定清除所有记录？</p >
+      <div class="modal-buttons">
+        <button class="modal-button confirm-button" id="confirmClear">是</button>
+        <button class="modal-button cancel-button" id="cancelClear">否</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let recordCount = 0;
+    const recordsList = document.getElementById('recordsList');
+    const recordButton = document.getElementById('recordButton');
+    const clearButton = document.getElementById('clearButton');
+    const clearModal = document.getElementById('clearModal');
+    const confirmClear = document.getElementById('confirmClear');
+    const cancelClear = document.getElementById('cancelClear');
+
+    // 从本地存储加载记录
+    function loadRecords() {
+      const savedRecords = localStorage.getItem('timeRecords');
+      if (savedRecords) {
+        recordsList.innerHTML = savedRecords;
+        const items = recordsList.getElementsByClassName('record-item');
+        recordCount = items.length;
+      }
+    }
+
+    // 保存记录到本地存储
+    function saveRecords() {
+      localStorage.setItem('timeRecords', recordsList.innerHTML);
+    }
+
+    // 添加新记录
+    recordButton.addEventListener('click', function() {
+      recordCount++;
+      
+      // 获取当前时间
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      
+      // 创建新记录项
+      const recordItem = document.createElement('div');
+      recordItem.className = 'record-item';
+      recordItem.textContent = `${recordCount}. ${timeString}`;
+      
+      // 添加到列表顶部
+      recordsList.insertBefore(recordItem, recordsList.firstChild);
+      
+      // 保存到本地存储
+      saveRecords();
+    });
+
+    // 显示清除确认对话框
+    clearButton.addEventListener('click', function() {
+      clearModal.style.display = 'flex';
+    });
+
+    // 确认清除
+    confirmClear.addEventListener('click', function() {
+      recordsList.innerHTML = '';
+      recordCount = 0;
+      clearModal.style.display = 'none';
+      
+      // 清除本地存储
+      localStorage.removeItem('timeRecords');
+    });
+
+    // 取消清除
+    cancelClear.addEventListener('click', function() {
+      clearModal.style.display = 'none';
+    });
+
+    // 点击对话框外部关闭
+    window.addEventListener('click', function(event) {
+      if (event.target === clearModal) {
+        clearModal.style.display = 'none';
+      }
+    });
+
+    // 页面加载时读取保存的记录
+    window.addEventListener('load', loadRecords);
+  </script>
+</body>
+</html>

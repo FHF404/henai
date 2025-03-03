@@ -314,10 +314,17 @@
         max-width: 100%;
         border-radius: 0;
       }
+      .record-button-wrapper:focus,
+      .record-button-wrapper:active {
+       outline: none; /* 取消蓝色高亮框 */
+      box-shadow: none; /* 防止某些浏览器仍然显示阴影 */
+  -webkit-tap-highlight-color: transparent; /* 取消移动端点击高亮 */
+}
       
       .record-button-wrapper {
         width: 90px;
         height: 260px;
+        outline: none;
       }
     }
 

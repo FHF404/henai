@@ -8,9 +8,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmClear = document.getElementById('confirmClear');
   const cancelClear = document.getElementById('cancelClear');
   const languageSelect = document.getElementById('languageSelect');
+  const milkAmountButtons = document.querySelectorAll('.milk-amount-button');
   
   // 记录计数
   let recordCount = 0;
+  let selectedAmount = null;
+  
+  // 计量按钮点击事件
+  milkAmountButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // 移除其他按钮的选中状态
+      milkAmountButtons.forEach(btn => btn.classList.remove('selected'));
+      // 添加当前按钮的选中状态
+      this.classList.add('selected');
+      // 记录选中的计量值
+      selectedAmount = this.getAttribute('data-amount');
+    });
+  });
   
   // 检查是否有记录并显示/隐藏空状态
   function checkEmptyState() {
@@ -37,8 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('babyFeedingRecords', recordsList.innerHTML);
     checkEmptyState();
   }
+  
   // 添加新记录
   function addNewRecord() {
+    // 如果没有选择计量，则不添加记录
+    if (!selectedAmount) {
+      return;
+    }
+    
     console.log('添加新记录');
     recordCount++;
     
@@ -65,6 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
     recordInfo.appendChild(recordNumber);
     recordInfo.appendChild(recordTime);
     recordItem.appendChild(recordInfo);
+    
+    // 添加计量显示
+    const milkAmount = document.createElement('div');
+    milkAmount.className = 'milk-amount';
+    milkAmount.textContent = `${selectedAmount}ml`;
+    recordItem.appendChild(milkAmount);
     
     if (recordCount > 1 && recordsList.firstChild) {
       const prevTimeText = recordsList.firstChild.querySelector('.record-time').textContent;
@@ -105,6 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     recordsList.insertBefore(recordItem, recordsList.firstChild);
     saveRecords();
+    
+    // 重置选中状态
+    milkAmountButtons.forEach(btn => btn.classList.remove('selected'));
+    selectedAmount = null;
   }
   
   // 添加事件监听器

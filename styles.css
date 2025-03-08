@@ -26,7 +26,6 @@ body {
   overflow: hidden;
   position: relative;
 }
-
 .header {
   background: linear-gradient(135deg, #ffc0cb 0%, #ff9dbb 100%);
   color: white;
@@ -380,7 +379,6 @@ body {
   background-color: #ff6b95;
   color: white;
 }
-
 .milk-amount {
   color: #ff6b95;
   padding: 3px 8px;
@@ -397,8 +395,98 @@ body {
   align-items: center;
   padding: 10px 0 30px;
 }
-
 .record-button-wrapper {
   width: 80px;
   height: 240px;
+}
+.record-item {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+  padding: 0;
+  border: 1px solid #ffd1dc;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+}
+.record-content {
+  padding: 15px;
+  transition: transform 0.3s ease;
+  background: #fff;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.record-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+.record-number {
+  background: #ffb6c1;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 12px;
+}
+.record-time {
+  color: #333;
+  font-size: 15px;
+}
+.milk-amount {
+  color: #ff6b95;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ff6b95;
+  margin-left: 20px; /* 增加左侧外边距，与时间保持距离 */
+}
+.time-interval {
+  color: #ff6b95;
+  font-size: 12px;
+  /* margin-top: 4px; */
+  padding: 2px 8px;
+  background: #fff;
+  border: 1px solid #ff6b95;
+  border-radius: 12px;
+  display: inline-block;
+}
+.delete-button {
+  position: absolute;
+  right: -60px;
+  top: 0;
+  height: 100%;
+  width: 60px;
+  background: #ff4757;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+.delete-button::before {
+  content: "\1F5D1";  /* Unicode 垃圾桶图标 */
+  font-size: 22px;
+}
+.record-item.swiped .record-content {
+  transform: translateX(-60px);
+}
+.record-item.swiped .delete-button {
+  right: 0; /* 滑动时显示删除按钮 */
+}
+.record-item.disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }
